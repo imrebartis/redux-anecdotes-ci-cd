@@ -1,28 +1,31 @@
-name: Deployment pipeline
+name: Playwright Tests
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
-    branches: [main]
+    branches: [main, master]
 
 jobs:
-  simple_deployment_pipeline:
-    runs-on: ubuntu-20.04
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: lts/*
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Check style
-        run: npm run lint
-      - name: Build
+      - name: Build project
         run: npm run build
       - name: Run Playwright tests
-        run: npx playwright test
+        run: |
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" npx playwright test
+        env:
+          CI: 'true'
+          NODE_ENV: 'test'
       - uses: actions/upload-artifact@v4
         if: always()
         with:
