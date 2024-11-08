@@ -12,6 +12,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeAnecdotes());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
