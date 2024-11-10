@@ -1,6 +1,10 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:3001/anecdotes";
+
+// eslint-disable-next-line no-undef
+const baseUrl = process.env.NODE_ENV === 'production'
+  ? "https://redux-anecdotes-ci-cd-green-river-391.fly.dev/anecdotes"
+  : "http://localhost:3000/anecdotes";
 
 const getAll = async () => {
   const response = await axios.get(baseUrl);

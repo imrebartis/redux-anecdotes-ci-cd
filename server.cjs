@@ -7,6 +7,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use(express.static('dist'));
+
 const DB_FILE = "./db.json";
 
 const readData = () => {
@@ -58,7 +60,15 @@ app.get("/anecdotes/:id", (req, res) => {
   }
 });
 
-const PORT = 3001;
+app.get('/version', (req, res) => {
+  res.send('1.0.0');
+})
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

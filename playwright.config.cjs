@@ -51,7 +51,7 @@ module.exports = defineConfig({
   webServer: [
     {
       command: 'npm run server',
-      url: 'http://localhost:3001/anecdotes',
+      url: 'http://localhost:3000/anecdotes',
       reuseExistingServer: true,
       timeout: 120000,
     },
