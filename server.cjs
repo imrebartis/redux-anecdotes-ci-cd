@@ -61,7 +61,7 @@ app.get("/anecdotes/:id", (req, res) => {
 });
 
 app.get('/version', (req, res) => {
-  res.send('1.0.1');
+  res.send('1.0.2');
 })
 
 app.get('/health', (req, res) => {
