@@ -38,8 +38,13 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: check_commits
+        run: |
+          git log --format=%B ${{ github.event.before }}..${{ github.event.after }} | grep -q "#skip" && echo "skip_release=true" >> $GITHUB_OUTPUT || echo "skip_release=false" >> $GITHUB_OUTPUT
       - name: Bump version and push tag
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' && !steps.check_commits.outputs.skip_release }}
         uses: anothrNick/github-tag-action@1.71.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
