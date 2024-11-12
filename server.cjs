@@ -9,6 +9,8 @@ app.use(cors());
 
 app.use(express.static('dist'));
 
+let isHealthy = true;
+
 const DB_FILE = "./db.json";
 
 const readData = () => {
@@ -64,7 +66,16 @@ app.get('/version', (req, res) => {
   res.send('1.0.3');
 })
 
+app.post('/toggle-health', (req, res) => {
+  isHealthy = !isHealthy;
+  res.json({ status: isHealthy ? 'healthy' : 'unhealthy' });
+});
+
 app.get('/health', (req, res) => {
+  if (!isHealthy) {
+    res.status(500).send('Service unavailable');
+    return;
+  }
   res.send('ok')
 })
 

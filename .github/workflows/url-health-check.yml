@@ -1,0 +1,41 @@
+name: Url Health Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  # schedule:
+  #   - cron: '30 5 * * *'
+
+jobs:
+  url_health_check:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check the deployed service URL
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: https://redux-anecdotes-ci-cd-green-river-391.fly.dev/health
+          max-attempts: 3
+          retry-delay: 5s
+          follow-redirect: true
+
+      - name: Notify success on Discord
+        if: success()
+        uses: Ilshidur/action-discord@0c4b27844ba47cb1c7bee539c8eead5284ce9fa9
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: |
+            "✅ Health check OK!"
+
+      - name: Notify failure on Discord
+        if: failure()
+        uses: Ilshidur/action-discord@0c4b27844ba47cb1c7bee539c8eead5284ce9fa9
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: |
+            "❌ Health check failed to reach Redux anecdotes."
