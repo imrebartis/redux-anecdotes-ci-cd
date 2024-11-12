@@ -50,3 +50,25 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
           DEFAULT_BUMP: patch
+  notify:
+    needs: [simple_deployment_pipeline, tag_release]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Build succeeded
+        uses: Ilshidur/action-discord@0c4b27844ba47cb1c7bee539c8eead5284ce9fa9
+        if: ${{ !contains(needs.*.result, 'failure') }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: |
+            "✅ A new version of Redux anecdotes has been deployed
+            to https://redux-anecdotes-ci-cd-green-river-391.fly.dev/
+            by: ${{ github.actor }}"
+      - name: Build failed
+        if: ${{ contains(needs.*.result, 'failure') }}
+        uses: Ilshidur/action-discord@0c4b27844ba47cb1c7bee539c8eead5284ce9fa9
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: |
+            "❌ commit ${{ github.sha }} by ${{ github.actor }} broke the build 😭"
