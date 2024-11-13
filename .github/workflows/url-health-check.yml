@@ -1,8 +1,9 @@
 name: Url Health Check
 
 on:
-  schedule:
-    - cron: '30 5 * * *'
+  workflow_dispatch: # Manual trigger
+  # schedule:
+  #   - cron: '30 5 * * *'
 
 jobs:
   url_health_check:
